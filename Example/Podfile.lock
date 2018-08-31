@@ -1,5 +1,5 @@
 PODS:
-  - GhostTypewriter (1.0.0)
+  - GhostTypewriter (1.1.0)
 
 DEPENDENCIES:
   - GhostTypewriter (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  GhostTypewriter: 74a203631a9b62c73281022441e38b74e2763d66
+  GhostTypewriter: a74059fec667a342e563c4d8a825ccff03b0444c
 
 PODFILE CHECKSUM: 1cd016dcc7aa7f7022cb854ac9b4b50f62048cb3
 

@@ -33,7 +33,7 @@ class TypewriterLabelTests: XCTestCase {
         label.typingTimeInterval = 0.5
         label.startTypewritingAnimation()
         
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             var foregroundColorApplied = 0
@@ -42,10 +42,10 @@ class TypewriterLabelTests: XCTestCase {
             }
             XCTAssertEqual(foregroundColorApplied, 2) // Hasn't been able to complete the animation due the time interval
             
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     // MARK: Start
@@ -54,7 +54,7 @@ class TypewriterLabelTests: XCTestCase {
         label.attributedText = NSAttributedString(string: "A significantly large test string")
         label.startTypewritingAnimation()
         
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             var foregroundColorApplied = 0
@@ -63,26 +63,26 @@ class TypewriterLabelTests: XCTestCase {
             }
             XCTAssertEqual(foregroundColorApplied, 2)
             
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     func test_start_completionCallback() {
         label.attributedText = NSAttributedString(string: "A test string")
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         label.startTypewritingAnimation {
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     func test_start_completionAllCharactersVisible() {
         label.attributedText = NSAttributedString(string: "A test string")
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         label.startTypewritingAnimation {
             self.label.attributedText!.enumerateAttribute(.foregroundColor, in: NSMakeRange(0, self.label.attributedText!.length), options: []) { (value, range, stop) -> Void in
@@ -93,10 +93,10 @@ class TypewriterLabelTests: XCTestCase {
                 XCTAssertEqual(range.length, expectedRange.length)
             }
             
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     // MARK: Cancel
@@ -105,7 +105,7 @@ class TypewriterLabelTests: XCTestCase {
         label.attributedText = NSAttributedString(string: "A significantly large test string")
         label.startTypewritingAnimation()
         
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.label.cancelTypewritingAnimation(clearText: true)
@@ -114,17 +114,17 @@ class TypewriterLabelTests: XCTestCase {
                 XCTAssertEqual(value as! UIColor, UIColor.clear)
             }
             
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     func test_cancel_doNotClearText() {
         label.attributedText = NSAttributedString(string: "A significantly large test string")
         label.startTypewritingAnimation()
         
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.label.cancelTypewritingAnimation(clearText: false)
@@ -135,10 +135,10 @@ class TypewriterLabelTests: XCTestCase {
             }
             XCTAssertEqual(foregroundColorApplied, 2)
             
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     // MARK: Stop
@@ -147,7 +147,7 @@ class TypewriterLabelTests: XCTestCase {
         label.attributedText = NSAttributedString(string: "A significantly large test string")
         label.startTypewritingAnimation()
         
-        let expectation = self.expectation(description: "Handler called")
+        let callbackExpectation = expectation(description: "Handler called")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.label.stopTypewritingAnimation()
@@ -160,10 +160,10 @@ class TypewriterLabelTests: XCTestCase {
             }
             XCTAssertEqual(foregroundColorApplied, 2)
             
-            expectation.fulfill()
+            callbackExpectation.fulfill()
         }
         
-        self.waitForExpectations(timeout: 3.0, handler: nil)
+        waitForExpectations(timeout: 3.0, handler: nil)
     }
     
     // MARK: HideTextBeforeTypewritingAnimation

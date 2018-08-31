@@ -8,21 +8,19 @@
 
 import UIKit
 
-public protocol TypewriterLabelDelegate: class {
-
-    func didFinishTypewritingAnimation(_ typewriterLabel: TypewriterLabel)
-}
-
 /// A UILabel subclass that adds a ghost type writing animation effect.
 public class TypewriterLabel: UILabel {
 
+    public typealias CompletionHandler = () -> Void
+    
     /// Interval (time gap) between each character being animated on screen.
     public var typingTimeInterval: TimeInterval = 0.1
 
     /// Timer instance that control's the animation.
     private var animationTimer: Timer?
-
-    private var animateUntilCharacterIndex = 0
+    
+    /// Completion closure to be called when animation has finished
+    private var completion: CompletionHandler?
 
     /// Allows for text to be hidden before animation begins.
     public var hideTextBeforeTypewritingAnimation = true {
@@ -31,9 +29,9 @@ public class TypewriterLabel: UILabel {
         }
     }
 
-    /// Delegate
-    public weak var delegate: TypewriterLabelDelegate?
-
+    /// Index of which characters are visible
+    private var animateUntilCharacterIndex = 0
+    
     /// Tracks the location of the next character using UTF16 encoding.
     private var utf16CharacterLocation = 0
 
@@ -63,22 +61,25 @@ public class TypewriterLabel: UILabel {
 
      - Parameter completion: a callback block/closure for when the type writing animation is complete. This can be useful for chaining multiple animations together.
      */
-    public func startTypewritingAnimation() {
+    public func startTypewritingAnimation(completion: CompletionHandler? = nil) {
+        self.completion = completion
+        
         setAttributedTextColorToTransparent()
         stopTypewritingAnimation()
 
         utf16CharacterLocation = 0
+        animateUntilCharacterIndex = 0
 
         if #available(iOS 10.0, *) {
             animationTimer = Timer.scheduledTimer(withTimeInterval: typingTimeInterval, repeats: true) { [weak self] in
-                self?.handle($0)
+                self?.animateNextCharacter($0)
             }
         } else {
-            animationTimer = Timer.scheduledTimer(timeInterval: typingTimeInterval, target: self, selector: #selector(handle(_:)), userInfo: nil, repeats: true)
+            animationTimer = Timer.scheduledTimer(timeInterval: typingTimeInterval, target: self, selector: #selector(animateNextCharacter(_:)), userInfo: nil, repeats: true)
         }
     }
 
-    @objc private func handle(_ timer: Timer) {
+    @objc private func animateNextCharacter(_ timer: Timer) {
         guard let charactersCount = attributedText?.string.count else {
             cancelTypewritingAnimation()
             return
@@ -88,7 +89,7 @@ public class TypewriterLabel: UILabel {
             setAlphaOnAttributedText(alpha: 1, characterIndex: animateUntilCharacterIndex)
             animateUntilCharacterIndex += 1
         } else {
-            delegate?.didFinishTypewritingAnimation(self)
+            completion?()
             stopTypewritingAnimation()
         }
     }
@@ -97,7 +98,6 @@ public class TypewriterLabel: UILabel {
      Stops the type writing animation.
      */
     public func stopTypewritingAnimation() {
-        animateUntilCharacterIndex = 0
         animationTimer?.invalidate()
         animationTimer = nil
     }
