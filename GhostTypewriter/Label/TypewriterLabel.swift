@@ -143,6 +143,7 @@ public final class TypewriterLabel: UILabel {
      
      - Parameter completion: A callback closure for when the type writing animation is complete.
      */
+    @objc
     public func startTypewritingAnimation(completion: TypewriterLabelCompletion? = nil) {
         self.completion = completion
         
@@ -238,6 +239,7 @@ public final class TypewriterLabel: UILabel {
      
      Any characters that have been animated on screen, remain on screen.
      */
+    @objc
     public func stopTypewritingAnimation() {
         isAnimating = false
         
@@ -252,6 +254,7 @@ public final class TypewriterLabel: UILabel {
      
      Does *not* restart the animation again.
      */
+    @objc
     public func resetTypewritingAnimation() {
         stopTypewritingAnimation()
         updateToStartPresentationState()
@@ -275,6 +278,7 @@ public final class TypewriterLabel: UILabel {
      
      - Parameter completion: A callback closure for when the type writing animation is complete.
      */
+    @objc
     public func restartTypewritingAnimation(completion: TypewriterLabelCompletion? = nil) {
         resetTypewritingAnimation()
         startTypewritingAnimation(completion: completion)
@@ -283,6 +287,7 @@ public final class TypewriterLabel: UILabel {
     /**
      Abruptly completes the remaining type writing animation without an animation.
      */
+    @objc
     public func completeTypewritingAnimation() {
         stopTypewritingAnimation()
         updateToFinishedPresentationState()
